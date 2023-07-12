@@ -1,8 +1,7 @@
+import requests
 from flask import Flask, jsonify, make_response
-from boto3 import client
 
-bucket_name = 'arn:aws:s3:us-east-1:141158507881:accesspoint/serverless-demo-static-ap'
-file_name = 'Air_Quality.csv'
+currency_api = 'https://api.coindesk.com/v1/bpi/currentprice.json'
 
 app = Flask(__name__)
 
@@ -14,9 +13,8 @@ def root_handler():
 
 @app.route("/stats", methods=["GET"])
 def stats_handler():
-    s3 = client('s3')
-    obj = s3.get_object(Bucket=bucket_name, Key=file_name)
-    return jsonify(message=obj['ETag'])
+    res = requests.get(currency_api)
+    return jsonify(message=res.json())
 
 
 @app.errorhandler(404)
